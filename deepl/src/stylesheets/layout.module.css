@@ -1,0 +1,41 @@
+.headerLayout {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #49ddc2;
+}
+
+.title {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.logout {
+  border: none;
+  border-radius: 5px;
+  padding: 8px 10px 8px 10px; 
+  font-size: 16px;
+  font-weight: bold;
+  /* color: rgb(172, 43, 43); */
+  color: #ffffff;
+  background-color: #51fedf;
+}
+
+.logout:hover {
+  /* color: rgb(97, 25, 25); */
+  color: #cccccc;
+  background-color: #27c8b3;
+}
+
+.footerLayout {
+  margin: 60px 30px 30px 0px;
+  text-align: end;
+  height: 30px;
+  font-size: 14px;
+}

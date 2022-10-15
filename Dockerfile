@@ -17,7 +17,7 @@ RUN npm install
 COPY . .
 
 # 特定のポートをコンテナがリッスンするために使う
-EXPOSE 3000
+EXPOSE 8080
 
 # npm start
 CMD ["npm", "start"]

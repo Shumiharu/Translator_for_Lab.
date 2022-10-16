@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import style from '../stylesheets/top.module.css';
 import { Container } from '@mui/system';
-
 import axios, { AxiosResponse } from 'axios';
 
 interface Translation {
@@ -9,34 +8,24 @@ interface Translation {
   text: string;
 }
 
-interface TranslationInfo {
-  translations: Translation[]
-}
-
-
 export const Top = () => {
   const ref = useRef<HTMLTextAreaElement>(null)
-  const [result, setResult] = useState<string>("")
-  
+  const [result, setResult] = useState<string>("");
+  const [target_lang, setTarget_lang] = useState('JA');
 
   const translate = () => {
     const value = ref.current?.value;
-
     if(value) {
-      axios.post("https://api-free.deepl.com/v2/translate", {
-        "auth_key": "6d436b98-3cfe-55aa-b2d9-3ccc2ecd556f:fx",
+      // const urlParam: string = new URLSearchParams(data).toString(); 
+      
+      axios.post('/translate', {
         "text": value,
-        "source_lang": 'EN',
-        "target_lang": 'JA'
-      }).then((response: AxiosResponse<TranslationInfo>) => {
-        let responseText: string = "";
-        console.log(typeof(response))
-        console.log(response)
-        // translationInfo.translations.forEach((translation) => {
-        //   responseText += "\n" + translation;
-        // })
-        setResult(responseText);
-      }).catch((error) => {
+        "target_lang": target_lang,
+      }).then((response: AxiosResponse<Translation>) => {
+        console.log(response);
+        // setResult(response);
+      })
+      .catch((error) => {
         console.log(error);
       })
     } else {

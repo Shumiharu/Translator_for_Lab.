@@ -20,3 +20,8 @@ export const App = () => {
     </>
   )
 } 
+
+// 勘違いしてたっぽい
+// これまでの解釈
+// (nginx + express) +react-app
+// nginx + (react-app + express)

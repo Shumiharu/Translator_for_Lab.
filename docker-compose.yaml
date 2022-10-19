@@ -1,17 +1,35 @@
 version: "3"
  
 services:
-  web:
+  nginx:
     build: 
-      context: .
+      context: ./nginx
       dockerfile: Dockerfile
     ports:
       - "80:80"
   app:
     build:
-      context: ./translator
+      context: ./app
       dockerfile: Dockerfile
     volumes:
-      - ./translator:/app
+      - ./app:/app
     ports:
-      - "3000:3000"
+      - "3001:3001"
+    secrets:
+      - members
+      - api_key
+  database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    ports:
+      - "3306:3306"
+    volumes:
+      - type: volume
+
+      # -./database:/database
+secrets:
+  menbers: 
+    file: menbers.json
+  api_key: 
+    file: api_key.txt

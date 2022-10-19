@@ -1,0 +1,8 @@
+import proxy, { createProxyMiddleware } from 'http-proxy-middleware'
+
+module.exports = (app: any) => {
+  app.use('/api/translate',createProxyMiddleware({
+    target: 'http://localhost:3001',
+    changeOrigin: true,
+  }))
+}

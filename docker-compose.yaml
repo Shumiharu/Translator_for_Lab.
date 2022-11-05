@@ -28,8 +28,8 @@ services:
       - type: volume
 
       # -./database:/database
-secrets:
-  menbers: 
-    file: menbers.json
-  api_key: 
-    file: api_key.txt
+# secrets:
+#   menbers: 
+#     file: menbers.json
+#   api_key: 
+#     file: api_key.txt

@@ -10,9 +10,20 @@
   background-color: #49ddc2;
 }
 
+.headerContent {
+  display: flex;
+  align-items: center;
+}
+
 .title {
   color: #ffffff;
   font-size: 30px;
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.user {
+  color: #ffffff;
   font-weight: bold;
 }
 

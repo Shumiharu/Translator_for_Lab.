@@ -1,4 +1,13 @@
-node_modules
-.env
-members.json
-api.text
+app/dev
+database/dev
+app/node_modules
+app/src/react/node_modules
+app/README.md
+database/README.md
+nginx/README.md
+secret
+MEMO.txt
+app/privatekey.pem
+app/cert.pem
+
+

@@ -5,4 +5,9 @@ module.exports = (app: any) => {
     target: 'http://localhost:3001',
     changeOrigin: true,
   }))
+  app.use('/init', createProxyMiddleware({
+    target: 'http://localhost:3001',
+    xfwd: true,
+    changeOrigin: true,
+  }))
 }

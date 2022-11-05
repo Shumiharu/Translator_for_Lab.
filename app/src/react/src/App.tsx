@@ -3,6 +3,7 @@ import { Layout } from './components/Layout';
 import { Top } from './components/Top';
 import { Error } from './components/Error';
 import { Login } from './components/Login';
+import { MemberProvider } from './providers/MemberProvider';
 
 
 export const App = () => {

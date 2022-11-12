@@ -3,6 +3,7 @@ import deepl from 'deepl';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import cors from 'cors';
+import dotenv from 'dotenv'
 import * as bcrypt from 'bcrypt';
 import { Member } from './entity/Member.js'
 import { AppDataSource } from './data-source.js';
@@ -14,13 +15,17 @@ import { verifyToken } from './helper/jwtHelper.js';
 const require = createRequire(import.meta.url);
 const okamotolab = require('../dev/okamotolab.json');
 
+if(process.env.NODE_ENV !== 'production'){
+  dotenv.config();
+}
+
 const app: express.Express = express();
 
 // CORSの許可
 const corsOptions = {
   credentials: true,
   origin: [
-    "http://localhost:3000", 
+    "http://localhost", // Docker(nginx)ではlocalhost:3000, ローカル環境ではlocalhost:3001 
     "https://api-free.deepl.com/v2/translate"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
@@ -45,17 +50,17 @@ app.use(cookieParser());
 
 // detabase initialize
 AppDataSource.initialize().then(async() => {
-    const saveMembers = async() => {
-        let promise = Promise.resolve();
-        okamotolab.members.forEach(async(member: Member) => {
-            promise = promise.then(async() => {
-                const newMember = new Member(member.name, member.password, "");
-                await AppDataSource.getRepository(Member).save(newMember);
-            })
+  const saveMembers = async() => {
+    let promise = Promise.resolve();
+    okamotolab.members.forEach(async(member: Member) => {
+        promise = promise.then(async() => {
+            const newMember = new Member(member.name, member.password, "");
+            await AppDataSource.getRepository(Member).save(newMember);
         })
-        await promise;
-    }
-    saveMembers();
+    })
+    await promise;
+  }
+  saveMembers();
 }).catch(error => console.log(error))
 
 app.use(morgan('combined'));
@@ -93,7 +98,7 @@ app.post('/login', async(req: express.Request, res: express.Response) => {
     }
 
     // const match = await bcrypt.compare(password, member.password);
-    const match = (password == '6Goukan1010');
+    const match = (password == process.env.PASSWORD_APP || "6Goukan1010");
 
     if(match) {
       const token = createToken();
@@ -108,6 +113,8 @@ app.post('/login', async(req: express.Request, res: express.Response) => {
         isAuthenticated: true,
         name: member.name
       })
+    } else {
+      throw Error("SERVER_ERROR");
     }
   } catch(error) {
     console.log(error)
@@ -126,14 +133,13 @@ app.post('/logout', async(req: express.Request, res: express.Response) => {
   }
 })
 
-app.post('/api/translation', (req: express.Request, res: express.Response) => {
+app.post('/api/translation', async(req: express.Request, res: express.Response) => {
   const { text, target_lang } = req.body;
   deepl({
     free_api: true,
     text: text,
     target_lang: target_lang,
-    // auth_key: process.env.API_KEY!
-    auth_key: "6d436b98-3cfe-55aa-b2d9-3ccc2ecd556f:fx"
+    auth_key: process.env.API_KEY! || "6d436b98-3cfe-55aa-b2d9-3ccc2ecd556f:fx"
   }).then((result) => {
     res.send(result.data.translations[0]);
   }).catch((error) => {
@@ -142,7 +148,8 @@ app.post('/api/translation', (req: express.Request, res: express.Response) => {
 })
 
 // 3001番ポートでAPIサーバ起動
-app.listen(3001,()=>{ console.log('Translator app listening on port 3001!') })
+const port = process.env.PORT || 3001
+app.listen(port,()=>{ console.log(`Translator API server is listening on port ${port}!`) });
 
 
 
@@ -169,4 +176,6 @@ app.listen(3001,()=>{ console.log('Translator app listening on port 3001!') })
 
 // 復習！！！！
 // 必ず各app.get, app.post にはres.sendやres.end入れる！！1
+
+// https://zenn.dev/ryota_koba04/scraps/1556360172954c
 

@@ -2,12 +2,14 @@ version: "3"
  
 services:
   nginx:
+    container_name: translator_nginx
     build: 
       context: ./nginx
       dockerfile: Dockerfile
     ports:
       - "80:80"
   app:
+    container_name: translator_app
     build:
       context: ./app
       dockerfile: Dockerfile
@@ -18,16 +20,21 @@ services:
     secrets:
       - members
       - api_key
+    expose:
+      - 3001
   database:
+    container_name: translator_db
     build:
       context: ./database
       dockerfile: Dockerfile
     ports:
-      - "3306:3306"
+      - "3307:3307"
     volumes:
-      - type: volume
-
-      # -./database:/database
+      # - type: volume
+      - ./database:/database
+    environment:
+      MYSQL_ROOT_PASSWORD: dzzv8280
+    restart: always
 # secrets:
 #   menbers: 
 #     file: menbers.json

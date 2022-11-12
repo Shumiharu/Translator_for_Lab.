@@ -33,7 +33,7 @@ export const Login = () => {
     .then((response) => {
       console.log(response);
       if(response.data.isAuthenticated) {
-        alert("Login successfully");
+        alert("Login successfully! welcome to translator, " + response.data.name);
         navigate('/', {replace: false});
       } else {
         alert("Sorry, name or password you entered was incorrect. ")

@@ -9,8 +9,8 @@ if(process.env.NODE_ENV !== 'production'){
 
 export const AppDataSource = new DataSource({
     type: "mariadb",
-    host: process.env.HOST || "translator_db",
-    port: Number(process.env.PORT_DB) || 3307,
+    host: process.env.HOST || "localhost",
+    port: Number(process.env.PORT_DB) || 3306,
     username: process.env.name || "root",
     password: process.env.password || "dzzv8280",
     database: process.env.DB || "okamotolab",
@@ -21,3 +21,5 @@ export const AppDataSource = new DataSource({
     migrations: [],
     subscribers: [],
 })
+
+

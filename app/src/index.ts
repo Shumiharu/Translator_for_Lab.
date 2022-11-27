@@ -10,6 +10,7 @@ import { AppDataSource } from './data-source.js';
 import { createRequire } from "module";
 import { createToken } from './helper/jwtHelper.js';
 import { verifyToken } from './helper/jwtHelper.js';
+import { handleDisconnect } from './mysql.js';
 
 // jsonをECMA形式で読み込む
 const require = createRequire(import.meta.url);
@@ -25,7 +26,7 @@ const app: express.Express = express();
 const corsOptions = {
   credentials: true,
   origin: [
-    "http://localhost", // Docker(nginx)ではlocalhost:3000, ローカル環境ではlocalhost:3001 
+    "http://localhost:3000", // これ絶対必要
     "https://api-free.deepl.com/v2/translate"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
@@ -47,6 +48,9 @@ app.use(cookieParser());
 // const server = https.createServer(server_opt, app);
 
 // app.set("trust proxy", 1);
+
+// mariadbへの接続
+handleDisconnect();
 
 // detabase initialize
 AppDataSource.initialize().then(async() => {
@@ -178,4 +182,9 @@ app.listen(port,()=>{ console.log(`Translator API server is listening on port ${
 // 必ず各app.get, app.post にはres.sendやres.end入れる！！1
 
 // https://zenn.dev/ryota_koba04/scraps/1556360172954c
+
+// 11/26
+// Corsの設定はちゃんとしよう
+// 原因が出てこない時は一度立ち止まって違う原因がないか調べよう
+// Databaseのポート番号が一致してるかちゃんと確かめて
 

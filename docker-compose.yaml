@@ -49,4 +49,8 @@ secrets:
   okamotolab:
     file: ./secrets/okamotolab
   db_settings:
+<<<<<<< Updated upstream
     file: ./secrets/db_settings
+=======
+    file: ./secrets/db_settings
+>>>>>>> Stashed changes

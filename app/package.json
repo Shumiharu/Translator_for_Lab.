@@ -9,7 +9,8 @@
     "tsc": "tsc",
     "ts-node": "ts-node",
     "server": "nodenv index.ts --exec nodemon ts-node",
-    "dev": "concurrently \"NODE_ENV='production' npm run start\" \"npm run react\"",
+    "dev": "concurrently \"NODE_ENV='development' npm run start\" \"npm run react\"",
+    "prod": "NODE_ENV='production' npm run start",
     "typeorm": "typeorm-ts-node-commonjs"
   },
   "dependencies": {

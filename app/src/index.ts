@@ -68,6 +68,8 @@ AppDataSource.initialize().then(async() => {
 
 app.use(morgan('combined'));
 
+
+
 app.get('/autholize', async(req: express.Request, res: express.Response) => {
   let token = req.cookies.token;
   if(token == null) {
@@ -154,6 +156,11 @@ app.post('/api/translation', async(req: express.Request, res: express.Response) 
 app.use((req, res, next) => {
   res.sendFile("/app/src/react/build/index.html");
 });
+
+// //これを追加（全てをindex.htmlにリダイレクト．いわゆるrewrite設定）
+// app.use((req, res, next) => {
+//   res.sendFile("/app/src/react/build/index.html");
+// });
 
 // 3001番ポートでAPIサーバ起動
 const port = 3001

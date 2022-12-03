@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 80
 
 # npm start
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "prod"]

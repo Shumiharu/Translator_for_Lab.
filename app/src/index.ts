@@ -198,4 +198,6 @@ app.listen(port,()=>{ console.log(`Translator API server is listening on port ${
 // dockerの環境でnpm installするからこっちでインストールする必要ないかと思ったがやっぱりいるみたい
 // docker環境でも動作確認
 
-
+// 12/4
+// なぜかdockerfileでRUN npm run build しても buildディレクトリが生成されない
+ 

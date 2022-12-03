@@ -5,12 +5,13 @@
   "scripts": {
     "react-install": "cd ./src/react && npm install",
     "react": "npm start --prefix ./src/react",
+    "build": "npm run build --prefix ./src/react",
     "start": "NODE_OPTIONS='--loader ts-node/esm' npx nodemon ./src/index.ts",
     "tsc": "tsc",
     "ts-node": "ts-node",
     "server": "nodenv index.ts --exec nodemon ts-node",
     "dev": "concurrently \"NODE_ENV='development' npm run start\" \"npm run react\"",
-    "prod": "NODE_ENV='production' npm run start",
+    "prod": "NODE_ENV='development' npm run start", 
     "typeorm": "typeorm-ts-node-commonjs"
   },
   "dependencies": {

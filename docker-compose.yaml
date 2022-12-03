@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
+    depends_on:
+      - app
   app:
     container_name: translator_app
     build:
@@ -41,10 +43,10 @@ services:
       - db_root_password
 secrets:
   db_root_password: 
-    file: ./secrets/db_root_password.txt
+    file: ./secrets/db_root_password
   deepl_api_key:
-    file: ./secrets/api_key.txt
+    file: ./secrets/api_key
   okamotolab:
-    file: ./secrets/okamotolab.json
+    file: ./secrets/okamotolab
   db_settings:
-    file: ./secrets/db_settings.json
+    file: ./secrets/db_settings

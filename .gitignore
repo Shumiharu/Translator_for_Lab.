@@ -5,7 +5,7 @@ app/src/react/node_modules
 app/README.md
 database/README.md
 nginx/README.md
-secret
+secrets
 MEMO.txt
 app/privatekey.pem
 app/cert.pem

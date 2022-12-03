@@ -3,22 +3,18 @@ import deepl from 'deepl';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import cors from 'cors';
-import dotenv from 'dotenv'
-import * as bcrypt from 'bcrypt';
+import * as fs from 'fs';
 import { Member } from './entity/Member.js'
-import { AppDataSource } from './data-source.js';
-import { createRequire } from "module";
-import { createToken } from './helper/jwtHelper.js';
-import { verifyToken } from './helper/jwtHelper.js';
-import { handleDisconnect } from './mysql.js';
+import { AppDataSource } from './data_source/data-source.js';
+import { createToken } from './jwt_helper/jwtHelper.js';
+import { verifyToken } from './jwt_helper/jwtHelper.js';
+import { handleDisconnect } from './database/mysql.js';
 
-// jsonをECMA形式で読み込む
-const require = createRequire(import.meta.url);
-const okamotolab = require('../dev/okamotolab.json');
-
-if(process.env.NODE_ENV !== 'production'){
-  dotenv.config();
-}
+// okamotolab
+const okamotolab_txt = fs.readFileSync("/run/secrets/okamotolab").toString();
+const okamotolab = JSON.parse(okamotolab_txt);
+// api key（絶対パス）
+const api_key = fs.readFileSync("/run/secrets/deepl_api_key").toString();
 
 const app: express.Express = express();
 
@@ -26,12 +22,15 @@ const app: express.Express = express();
 const corsOptions = {
   credentials: true,
   origin: [
-    "http://localhost:3000", // これ絶対必要
+    "http://localhost", // これ絶対必要
     "https://api-free.deepl.com/v2/translate"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
 }
 app.use(cors(corsOptions));
+
+//ミドルウエアでstaticパスを追加（ただ、これだけだと直アクセスや無いpathだと動かない）
+app.use(express.static("/app/src/react/build"));
 
 // body-parserに基づいた着信リクエストの解析
 app.use(express.json());
@@ -102,9 +101,9 @@ app.post('/login', async(req: express.Request, res: express.Response) => {
     }
 
     // const match = await bcrypt.compare(password, member.password);
-    const match = (password == process.env.PASSWORD_APP || "6Goukan1010");
+    const match = (password === member.password);
 
-    if(match) {
+    if(match === true) {
       const token = createToken();
 
       member.token = token;
@@ -118,7 +117,7 @@ app.post('/login', async(req: express.Request, res: express.Response) => {
         name: member.name
       })
     } else {
-      throw Error("SERVER_ERROR");
+      throw Error("PASSWORD_INVALID_VALUE");
     }
   } catch(error) {
     console.log(error)
@@ -143,7 +142,7 @@ app.post('/api/translation', async(req: express.Request, res: express.Response) 
     free_api: true,
     text: text,
     target_lang: target_lang,
-    auth_key: process.env.API_KEY! || "6d436b98-3cfe-55aa-b2d9-3ccc2ecd556f:fx"
+    auth_key: api_key
   }).then((result) => {
     res.send(result.data.translations[0]);
   }).catch((error) => {
@@ -151,14 +150,14 @@ app.post('/api/translation', async(req: express.Request, res: express.Response) 
   })
 })
 
+//これを追加（全てをindex.htmlにリダイレクト．いわゆるrewrite設定）
+app.use((req, res, next) => {
+  res.sendFile("/app/src/react/build/index.html");
+});
+
 // 3001番ポートでAPIサーバ起動
-const port = process.env.PORT || 3001
+const port = 3001
 app.listen(port,()=>{ console.log(`Translator API server is listening on port ${port}!`) });
-
-
-
-
-
 
 // 開発時はexpressのサーバーとReactのサーバーを別々で起動する
 // 本番は
@@ -187,4 +186,9 @@ app.listen(port,()=>{ console.log(`Translator API server is listening on port ${
 // Corsの設定はちゃんとしよう
 // 原因が出てこない時は一度立ち止まって違う原因がないか調べよう
 // Databaseのポート番号が一致してるかちゃんと確かめて
+
+// 11/27
+// dockerの環境でnpm installするからこっちでインストールする必要ないかと思ったがやっぱりいるみたい
+// docker環境でも動作確認
+
 

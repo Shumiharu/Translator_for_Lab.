@@ -1,4 +1,4 @@
-version: "3"
+version: "3.9"
  
 services:
   nginx:
@@ -17,9 +17,12 @@ services:
       - ./app:/app
     ports:
       - "3001:3001"
+    depends_on:
+      - database
     secrets:
-      - members
-      - api_key
+      - okamotolab
+      - deepl_api_key
+      - db_settings
     expose:
       - 3001
   database:
@@ -28,15 +31,20 @@ services:
       context: ./database
       dockerfile: Dockerfile
     ports:
-      - "3307:3307"
+      - "3306:3306"
     volumes:
-      # - type: volume
       - ./database:/database
     environment:
-      MYSQL_ROOT_PASSWORD: dzzv8280
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
     restart: always
-# secrets:
-#   menbers: 
-#     file: menbers.json
-#   api_key: 
-#     file: api_key.txt
+    secrets:
+      - db_root_password
+secrets:
+  db_root_password: 
+    file: ./secrets/db_root_password.txt
+  deepl_api_key:
+    file: ./secrets/api_key.txt
+  okamotolab:
+    file: ./secrets/okamotolab.json
+  db_settings:
+    file: ./secrets/db_settings.json

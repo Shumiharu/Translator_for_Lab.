@@ -1,10 +1,14 @@
 import mysql from 'mysql'
+import * as fs from 'fs' 
+
+const database_txt = fs.readFileSync("/run/secrets/db_settings").toString();
+const database = JSON.parse(database_txt);
 
 const db_config = {
-  host: 'localhost',
-    user: 'root',
-    password: 'dzzv8280',
-    database: 'okamotolab'
+  host: database.host,
+    user: database.user,
+    password: database.password,
+    database: database.name
 };
 
 export const handleDisconnect = () => {

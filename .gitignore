@@ -1,5 +1,6 @@
 app/node_modules
 app/src/react/node_modules
+app/src/react/build
 secrets
 MEMO.txt
 

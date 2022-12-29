@@ -1,5 +1,5 @@
 import express from 'express'
-import deepl from 'deepl';
+import * as deepl from 'deepl-node';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import cors from 'cors';
@@ -13,8 +13,8 @@ import { handleDisconnect } from './database/mysql.js';
 // okamotolab
 const okamotolab_txt = fs.readFileSync("/run/secrets/okamotolab").toString();
 const okamotolab = JSON.parse(okamotolab_txt);
-// api key（絶対パス）
-const api_key = fs.readFileSync("/run/secrets/deepl_api_key").toString();
+
+const api_key = fs.readFileSync("/run/secrets/api_key").toString();
 
 const app: express.Express = express();
 
@@ -22,7 +22,7 @@ const app: express.Express = express();
 const corsOptions = {
   credentials: true,
   origin: [
-    "http://localhost", // これ絶対必要
+    "http://sv7.comm.nitech.ac.jp", // これ絶対必要
     "https://api-free.deepl.com/v2/translate"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
@@ -139,28 +139,22 @@ app.post('/logout', async(req: express.Request, res: express.Response) => {
 })
 
 app.post('/api/translation', async(req: express.Request, res: express.Response) => {
-  const { text, target_lang } = req.body;
-  deepl({
-    free_api: true,
-    text: text,
-    target_lang: target_lang,
-    auth_key: api_key
-  }).then((result) => {
-    res.send(result.data.translations[0]);
-  }).catch((error) => {
+  const text: string = req.body.text;
+  const target_lang: deepl.TargetLanguageCode = req.body.target_lang
+  const translator = new deepl.Translator(api_key);
+  await translator.translateText(text, null, target_lang)
+  .then((result) => {
+    res.send(result.text);
+  })
+  .catch((error) => {
     console.log(error);
+    res.end();
   })
 })
-
 //これを追加（全てをindex.htmlにリダイレクト．いわゆるrewrite設定）
 app.use((req, res, next) => {
   res.sendFile("/app/src/react/build/index.html");
 });
-
-// //これを追加（全てをindex.htmlにリダイレクト．いわゆるrewrite設定）
-// app.use((req, res, next) => {
-//   res.sendFile("/app/src/react/build/index.html");
-// });
 
 // 3001番ポートでAPIサーバ起動
 const port = 3001

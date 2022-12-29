@@ -1,0 +1,11 @@
+.gitignore
+.dockerignore
+
+app/node_modules
+app/Dockerfile
+app/src/react/node_modules
+
+mariadb/Dockerfile
+
+nginx/Dockerfile
+

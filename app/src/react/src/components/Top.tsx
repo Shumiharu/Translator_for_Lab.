@@ -4,10 +4,10 @@ import { Container } from '@mui/system';
 import axios, { AxiosResponse } from 'axios';
 import { response } from 'express';
 
-interface Translation {
-  detected_source_language: string;
-  text: string;
-}
+// interface Translation {
+//   detected_source_language: string;
+//   text: string;
+// }
 
 export const Top = () => {
   const ref = useRef<HTMLTextAreaElement>(null)
@@ -17,15 +17,11 @@ export const Top = () => {
   const translate = () => {
     const value = ref.current?.value;
     if(value) {
-
-      // const urlParam: string = new URLSearchParams(data).toString(); 
-      
       axios.post('/api/translation', {
         "text": value,
         "target_lang": target_lang,
-      }).then((response: AxiosResponse<Translation>) => {
-        console.log(response.data);
-        setResult(response.data.text);
+      }).then((response: AxiosResponse<string>) => {
+        setResult(response.data);
       })
       .catch((error) => {
         console.log(error);

@@ -3,16 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "react-install": "cd ./src/react && npm install",
-    "react": "npm start --prefix ./src/react",
-    "build": "npm run build --prefix ./src/react",
-    "start": "NODE_OPTIONS='--loader ts-node/esm' npx nodemon ./src/index.ts",
     "tsc": "tsc",
     "ts-node": "ts-node",
-    "server": "nodenv index.ts --exec nodemon ts-node",
-    "dev": "concurrently \"NODE_ENV='development' npm run start\" \"npm run react\"",
-    "prod": "NODE_ENV='development' npm run start", 
-    "typeorm": "typeorm-ts-node-commonjs"
+    "react": "npm start --prefix ./src/react",
+    "build": "npm run build --prefix ./src/react",
+    "dev_start": "NODE_OPTIONS='--loader ts-node/esm' npx nodemon ./src/index.ts",
+    "prod_start": "NODE_OPTIONS='--loader ts-node/esm' pm2-runtime start ./src/index.ts --watch",
+    "dev": "concurrently \"NODE_ENV='development' npm run dev_start\" \"npm run react\"",
+    "prod": "NODE_ENV='production' npm run prod_start"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -30,6 +28,7 @@
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "deepl": "^1.0.13",
+    "deepl-node": "^1.7.2",
     "dotenv": "^16.0.3",
     "env-cmd": "^10.1.0",
     "express": "~4.16.1",
@@ -44,6 +43,7 @@
     "nodemon": "^2.0.20",
     "npm-run-all": "^4.1.5",
     "pino-colada": "^2.2.2",
+    "pm2": "^5.2.2",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",

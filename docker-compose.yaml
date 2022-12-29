@@ -1,15 +1,26 @@
 version: "3.9"
  
 services:
-  nginx:
-    container_name: translator_nginx
-    build: 
-      context: ./nginx
+  mariadb:
+    container_name: translator_mariadb
+    build:
+      context: ./mariadb
       dockerfile: Dockerfile
     ports:
-      - "80:80"
-    depends_on:
-      - app
+      - "3306:3306"
+    volumes:
+      - ./mariadb:/mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    secrets:
+      - db_root_password
+    restart: always
+    healthcheck:
+      test: exit 0
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
   app:
     container_name: translator_app
     build:
@@ -19,38 +30,30 @@ services:
       - ./app:/app
     ports:
       - "3001:3001"
-    depends_on:
-      - database
+    depends_on: 
+      mariadb:
+        condition: service_healthy
     secrets:
       - okamotolab
-      - deepl_api_key
+      - api_key
       - db_settings
     expose:
       - 3001
-  database:
-    container_name: translator_db
-    build:
-      context: ./database
+  nginx:
+    container_name: translator_nginx
+    build: 
+      context: ./nginx
       dockerfile: Dockerfile
     ports:
-      - "3306:3306"
-    volumes:
-      - ./database:/database
-    environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
-    restart: always
-    secrets:
-      - db_root_password
+      - "80:80"
+    depends_on:
+      - app
 secrets:
   db_root_password: 
     file: ./secrets/db_root_password
-  deepl_api_key:
+  api_key:
     file: ./secrets/api_key
   okamotolab:
     file: ./secrets/okamotolab
   db_settings:
-<<<<<<< Updated upstream
     file: ./secrets/db_settings
-=======
-    file: ./secrets/db_settings
->>>>>>> Stashed changes

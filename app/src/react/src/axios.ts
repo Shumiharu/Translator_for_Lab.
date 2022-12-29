@@ -4,7 +4,7 @@ import { Member } from "./interfaces/member";
 axios.defaults.withCredentials = true
 
 export const instance = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: "http://sv7.comm.nitech.ac.jp",
 });
 
 export const autholize = async() => {
